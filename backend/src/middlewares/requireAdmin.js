@@ -1,7 +1,9 @@
-// Middleware para verificar si el usuario es admin
-// Persona 3 implementará la lógica real
-
-module.exports = (req, res, next) => {
-    // TODO: verificar rol admin
-    next();
+const requireAdmin = (req, res, next) => {
+    if (req.user && req.user.role === 'admin') {
+        next();
+    } else {
+        res.status(403).json({ message: 'Acceso denegado. Se requiere rol de administrador.' });
+    }
 };
+
+module.exports = requireAdmin;
