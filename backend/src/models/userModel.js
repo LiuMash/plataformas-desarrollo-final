@@ -1,9 +1,29 @@
-module.exports = {
-    register: async (data) => {
-        // Persona 2: insertar usuario y devolverlo
-    },
+const { db } = require('../db'); 
 
-    login: async (email) => {
-        // Persona 2: buscar usuario por email
-    }
+const createUser = (email, passwordHash, role) => {
+    return new Promise((resolve, reject) => {
+        const query = 'INSERT INTO users (email, password_hash, role) VALUES (?, ?, ?)';
+        db.run(query, [email, passwordHash, role], function (err) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve({ id: this.lastID, email, role });
+            }
+        });
+    });
 };
+
+const findByEmail = (email) => {
+    return new Promise((resolve, reject) => {
+        const query = 'SELECT * FROM users WHERE email = ?';
+        db.get(query, [email], (err, row) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(row);
+            }
+        });
+    });
+};
+
+module.exports = { createUser, findByEmail };

@@ -1,10 +1,8 @@
-const { getDB } = require('../db');
+const { db } = require('../db');
 
 module.exports = {
     // Obtener todos los productos desde SQLite
     getAll: async () => {
-        const db = getDB();
-
         return new Promise((resolve, reject) => {
             db.all('SELECT * FROM products', [], (err, rows) => {
                 if (err) {
@@ -18,7 +16,6 @@ module.exports = {
 
     // Crear producto
     create: async (data) => {
-        const db = getDB();
         const { name, description = null, price, stock = 0 } = data;
 
         return new Promise((resolve, reject) => {
@@ -43,10 +40,8 @@ module.exports = {
         });
     },
 
-
     // Actualizar producto
     update: async (id, data) => {
-        const db = getDB();
         const { name, description = null, price, stock } = data;
 
         return new Promise((resolve, reject) => {
@@ -59,7 +54,6 @@ module.exports = {
                     if (err) {
                         reject(err);
                     } else {
-                        // this.changes === 0 → no existe el producto
                         if (this.changes === 0) {
                             resolve(null);
                         } else {
@@ -76,12 +70,9 @@ module.exports = {
             );
         });
     },
-    // ...
 
-
+    // Eliminar producto
     remove: async (id) => {
-        const db = getDB();
-
         return new Promise((resolve, reject) => {
             db.run(
                 `DELETE FROM products WHERE id = ?`,
@@ -91,7 +82,6 @@ module.exports = {
                         reject(err);
                     } else {
                         if (this.changes === 0) {
-                            // No se encontró el producto
                             resolve(null);
                         } else {
                             resolve({ success: true });
