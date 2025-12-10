@@ -137,4 +137,60 @@ git add .
 git commit -m "Descripción corta del cambio"
 git push -u origin feature/sqlite-models / o auth-security
 
+Para Mila:
+
+Hola, ya terminé la parte de Base de Datos, Login, Registro y Seguridad (JWT). Para que funcione en tu parte (app.js y productRoutes.js), sigue estos 4 pasos:
+
+1. Instalación de nuevas librerías
+Necesitas instalar las dependencias de seguridad y conexión que agregué. Corre esto en la terminal:
+
+Bash
+
+npm install bcryptjs jsonwebtoken dotenv cors
+2. Configuración de Variables de Entorno
+En el archivo .env (en la raíz del backend), agrega esta clave secreta para que funcionen los tokens:
+
+Plaintext
+
+JWT_SECRET=clave_secreta_de_los_alumnos
+3. Actualizar app.js (Para activar el Login)
+En el archivo principal, agrega estas líneas para habilitar CORS (para el frontend) y las rutas de usuarios:
+
+JavaScript
+
+// 1. Importaciones arriba
+const cors = require('cors');
+require('dotenv').config();
+const userRoutes = require('./src/routes/userRoutes');
+
+// 2. Middlewares globales (antes de las rutas)
+app.use(cors());
+app.use(express.json());
+
+// 3. Conectar la ruta de usuarios
+app.use('/users', userRoutes);
+4. Proteger las Rutas de Productos (IMPORTANTE)
+Para cumplir con la consigna del final, las rutas de Crear, Editar y Borrar productos deben ser privadas (solo Admins).
+
+En tu archivo src/routes/productRoutes.js:
+
+A. Importa los middlewares:
+
+JavaScript
+
+const requireAuth = require('../middlewares/requireAuth');
+const requireAdmin = require('../middlewares/requireAdmin');
+B. Agrégalos en las rutas sensibles (POST, PUT, DELETE): No los pongas en el GET (ver productos), ese debe ser público.
+
+JavaScript
+
+// Ejemplo de ruta protegida (solo Admins pueden crear)
+router.post('/', requireAuth, requireAdmin, productController.create);
+
+// Ejemplo de ruta protegida (solo Admins pueden editar)
+router.put('/:id', requireAuth, requireAdmin, productController.update);
+
+// Ejemplo de ruta protegida (solo Admins pueden borrar)
+router.delete('/:id', requireAuth, requireAdmin, productController.remove);
+
 
