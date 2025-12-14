@@ -12,6 +12,11 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (password.length < 6) {
+      setError("La contraseña debe tener al menos 6 caracteres.");
+      return;
+    }
+
     setError("");
     setOk("");
 
@@ -38,7 +43,12 @@ const Register = () => {
             type="email"
             className="form-control"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              setError("");
+              setOk("");
+            }}
+
             required
           />
         </div>
@@ -49,7 +59,12 @@ const Register = () => {
             type="password"
             className="form-control"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              setError("");
+              setOk("");
+            }}
+
             required
           />
         </div>

@@ -4,7 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import { AuthAPI } from "../api";
 
 const Login = () => {
-  const [email, setEmail] = useState("");       
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
@@ -12,7 +12,7 @@ const Login = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
- 
+
   const redirectTo = location.state?.from?.pathname || "/products";
 
   const handleSubmit = async (e) => {
@@ -21,7 +21,7 @@ const Login = () => {
 
     try {
       const data = await AuthAPI.login(email, password);
-      
+
       login({ email, role: data.role }, data.token, redirectTo);
       alert("Login exitoso");
     } catch (err) {
@@ -37,11 +37,11 @@ const Login = () => {
         <div className="alert alert-danger" role="alert">
           {error}
         </div>
-    
+
       )}
-    <div className="mt-3">
-      <a href="/register">¿No tenés cuenta? Registrate</a>
-    </div>
+      <div className="mt-3">
+        <a href="/register">¿No tenés cuenta? Registrate</a>
+      </div>
 
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
@@ -53,7 +53,11 @@ const Login = () => {
             className="form-control"
             id="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              setError("");
+            }}
+
             required
             autoComplete="username"
           />
@@ -69,6 +73,7 @@ const Login = () => {
             id="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+
             required
             autoComplete="current-password"
           />

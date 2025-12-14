@@ -1,12 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
+
 import { useAuth } from "../context/AuthContext";
 import { ProductsAPI } from "../api";
 import "./ProductManagement.css";
 
 const ProductManagement = () => {
-  const { user, token, isAdmin } = useAuth();
-  const navigate = useNavigate();
+  const { user, token, isAdmin, ready } = useAuth();
+
+
   const formRef = useRef(null);
 
   const [products, setProducts] = useState([]);
@@ -24,17 +26,7 @@ const ProductManagement = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editProductId, setEditProductId] = useState(null);
 
-  // Guard: solo admin
-  useEffect(() => {
-    if (!user) {
-      navigate("/login");
-      return;
-    }
-    if (!isAdmin()) {
-      navigate("/products");
-      return;
-    }
-  }, [user, isAdmin, navigate]);
+
 
   // Cargar productos desde backend
   useEffect(() => {
@@ -172,6 +164,10 @@ const ProductManagement = () => {
       setError(e.message);
     }
   };
+  if (!ready) return null; // ждём инициализации контекста
+  if (!user) return <Navigate to="/login" replace />;
+  if (!isAdmin()) return <Navigate to="/products" replace />;
+
 
   return (
     <div className="product-management">

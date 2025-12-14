@@ -6,11 +6,13 @@ const AuthContext = createContext();
 const STORAGE_KEY = "auth";
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null); 
+  const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
+  const [ready, setReady] = useState(false);
+
   const navigate = useNavigate();
 
-  
+
   useEffect(() => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
@@ -21,12 +23,14 @@ export const AuthProvider = ({ children }) => {
         setUser(parsed.user);
       }
     } catch {
-      
+
       localStorage.removeItem(STORAGE_KEY);
     }
+    setReady(true);
+
   }, []);
 
-  
+
   const persist = (nextUser, nextToken) => {
     localStorage.setItem(
       STORAGE_KEY,
@@ -34,7 +38,7 @@ export const AuthProvider = ({ children }) => {
     );
   };
 
-  
+
   const login = (userInfo, jwtToken, redirectTo = "/") => {
     setUser(userInfo);
     setToken(jwtToken);
@@ -42,7 +46,7 @@ export const AuthProvider = ({ children }) => {
     navigate(redirectTo);
   };
 
-  
+
   const logout = () => {
     setUser(null);
     setToken(null);
@@ -51,13 +55,13 @@ export const AuthProvider = ({ children }) => {
     navigate("/");
   };
 
-  
+
   const isAdmin = () => {
     return user && user.role === "admin";
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, login, logout, isAdmin }}>
+    <AuthContext.Provider value={{ user, token, ready, login, logout, isAdmin }}>
       {children}
     </AuthContext.Provider>
   );

@@ -1,4 +1,5 @@
-const API_BASE = ""; 
+const API_BASE = "http://localhost:3001";
+
 
 export async function apiRequest(path, { method = "GET", body, token } = {}) {
   const headers = {};
